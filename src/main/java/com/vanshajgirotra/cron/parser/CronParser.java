@@ -20,15 +20,16 @@ public class CronParser {
             new CommandParser());
 
     @Builder
-    private record ParsedData(String parserName, String parsedValue) {
+    record ParsedData(String parserName, String parsedValue) {
     }
 
     public static void main(String[] args) {
         final CronParser parser = new CronParser();
-        parser.parse("*/15 0 1,15 * 1-5 /usr/bin/find hello world");
+        List<ParsedData> parsedData = parser.parse(args[0]);
+        System.out.println(prettyFormat(parsedData));
     }
 
-    private void parse(final String input) {
+    List<ParsedData> parse(final String input) {
         final List<String> inputParts = Arrays.stream(input.split(" ")).toList();
 
         if (inputParts.size() < MIN_INPUT_LENGTH) {
@@ -38,7 +39,7 @@ public class CronParser {
         final List<String> params = new ArrayList<>(List.copyOf(inputParts.subList(0, MIN_INPUT_LENGTH - 1)));
         params.add(String.join(" ", inputParts.subList(MIN_INPUT_LENGTH - 1, inputParts.size())));
 
-        final List<ParsedData> parsedData = IntStream
+        return IntStream
                 .rangeClosed(0, 5)
                 .boxed()
                 .map(idx -> ParsedData.builder()
@@ -47,14 +48,13 @@ public class CronParser {
                                 .parse(params.get(idx))).build())
                 .toList();
 
-        prettyFormat(parsedData);
     }
 
-    private static void prettyFormat(final List<ParsedData> parsedData) {
-        parsedData.forEach(data -> {
-            System.out.printf("%-" + COLUMN_WIDTH + "s", data.parserName);
-            System.out.println(data.parsedValue);
-        });
+    static String prettyFormat(final List<ParsedData> parsedData) {
+        return parsedData.stream()
+                .map(data -> String.format("%-" + COLUMN_WIDTH + "s %s", data.parserName, data.parsedValue))
+                .reduce((s1, s2) -> s1 + "\n" + s2)
+                .orElse("");
     }
 
 }
