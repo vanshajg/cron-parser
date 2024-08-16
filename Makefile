@@ -5,7 +5,7 @@ JAR_FILE = $(TARGET_DIR)/cron-parser-1.0-SNAPSHOT.jar
 MAIN_CLASS = com.vanshajgirotra.cron.parser.CronParser
 
 # Default cron expression
-DEFAULT_CRON = "*/15 0 1,15 * 1-5 /usr/bin/find"
+DEFAULT_CRON = */15 0 1,15 * 1-5 /usr/bin/find
 
 # The cron expression to use, defaulting to DEFAULT_CRON if not set
 CRON ?= $(DEFAULT_CRON)
@@ -28,5 +28,4 @@ package:
 # Run the packaged JAR file with the cron expression
 .PHONY: run
 run:
-	@echo "Running with CRON: $(CRON)"
 	java -cp $(JAR_FILE) $(MAIN_CLASS) '$(subst ','\'',$(CRON))'
