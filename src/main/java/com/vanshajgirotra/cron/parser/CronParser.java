@@ -25,12 +25,19 @@ public class CronParser {
 
     public static void main(String[] args) {
         final CronParser parser = new CronParser();
+        System.out.println(Arrays.toString(args));
+        if (args.length != 1) {
+            throw new IllegalArgumentException("Invalid number of arguments");
+        }
+        System.out.println("Input: " + args[0]);
         List<ParsedData> parsedData = parser.parse(args[0]);
         System.out.println(prettyFormat(parsedData));
     }
 
     List<ParsedData> parse(final String input) {
-        final List<String> inputParts = Arrays.stream(input.split(" ")).toList();
+        final List<String> inputParts = Arrays.stream(input.split(" "))
+                .filter((token) -> !token.isBlank())
+                .toList();
 
         if (inputParts.size() < MIN_INPUT_LENGTH) {
             throw new IllegalArgumentException("Invalid input for cron expression");

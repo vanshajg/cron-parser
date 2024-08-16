@@ -1,26 +1,32 @@
 # Define variables
 MVN = ./mvnw
-CLEAN_CMD = $(MVN) clean
-PACKAGE_CMD = $(MVN) package
-JAR_NAME = target/my-app-1.0-SNAPSHOT.jar
+TARGET_DIR = target
+JAR_FILE = $(TARGET_DIR)/cron-parser-1.0-SNAPSHOT.jar
+MAIN_CLASS = com.vanshajgirotra.cron.parser.CronParser
 
-# Default target
-all: clean build
+# Default cron expression
+DEFAULT_CRON = "*/15 0 1,15 * 1-5 /usr/bin/find"
 
-# Rule to build the project
-build:
-	@echo "Building the project..."
-	$(PACKAGE_CMD)
+# The cron expression to use, defaulting to DEFAULT_CRON if not set
+CRON ?= $(DEFAULT_CRON)
 
-# Rule to clean build artifacts
+
+# The default goal
+.PHONY: all
+all: clean package run
+
+# Clean the project
+.PHONY: clean
 clean:
-	@echo "Cleaning up..."
-	$(CLEAN_CMD)
+	$(MVN) clean
 
-# Rule to run the JAR file
-run: $(JAR_NAME)
-	@echo "Running the JAR file..."
-	java -jar $(JAR_NAME)
+# Package the project into a JAR
+.PHONY: package
+package:
+	$(MVN) package
 
-# Phony targets
-.PHONY: all clean build run
+# Run the packaged JAR file with the cron expression
+.PHONY: run
+run:
+	@echo "Running with CRON: $(CRON)"
+	java -cp $(JAR_FILE) $(MAIN_CLASS) '$(subst ','\'',$(CRON))'
