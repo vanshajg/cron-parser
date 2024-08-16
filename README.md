@@ -17,7 +17,7 @@ please update the cron string in the makefile if you want to test with a differe
 
 for subsequent runs, you can run the jar file with the cron string as an argument
 ```bash
-make run CRON="*/15 0 1,15 * 1-5 /usr/bin/test hello world"
+make run CRON="*/15 0 1,15 * 1-5 /usr/bin/echo hello world"
 ```
 
 ## Directory structure
