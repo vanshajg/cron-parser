@@ -43,7 +43,7 @@ public class CronParser {
             throw new IllegalArgumentException("Invalid input for cron expression");
         }
 
-        final List<String> params = new ArrayList<>(List.copyOf(inputParts.subList(0, MIN_INPUT_LENGTH - 1)));
+        final List<String> params = new ArrayList<>(inputParts.subList(0, MIN_INPUT_LENGTH - 1));
         params.add(String.join(" ", inputParts.subList(MIN_INPUT_LENGTH - 1, inputParts.size())));
 
         return IntStream
